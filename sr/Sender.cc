@@ -28,8 +28,7 @@ bool SRSender::send(Message& msg){
     Packet pkt = mkdat(msg, seq);
     window.push_back(pair<Packet, bool>(pkt, false));
     *this << pkt;
-    stoptimer(0);
-    timer(0, Configuration::TIME_OUT);
+    timer(seq, Configuration::TIME_OUT);
     return true;
 }
 
@@ -51,6 +50,7 @@ void SRSender::receive(Packet& pkt){
     for(auto &x: window){
         if(x.first.seqnum == pkt.acknum){
             x.second = true;
+            stoptimer(pkt.acknum);
             break;
         }
     }
@@ -63,14 +63,12 @@ void SRSender::receive(Packet& pkt){
 }
 
 void SRSender::timeoutHandler(int id){
-    // we only setup one timeout handler..
-    qLogWarn("SRSender: timed out.");
+    qLogWarnfmt("SRSender: timed out for %d.", id);
     for(auto &x: window){
-        if(x.second == false){
+        if(x.first.seqnum == id && x.second == false){
             *this << x.first;
+            timer(id, Configuration::TIME_OUT);
+            return;
         }
-    }
-    if(window.size() != 0){
-        timer(0, Configuration::TIME_OUT);
     }
 }
