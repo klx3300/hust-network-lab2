@@ -10,6 +10,8 @@
 #include "goback/Receiver.h"
 #include "sr/Sender.h"
 #include "sr/Receiver.h"
+#include "simptcp/Sender.h"
+#include "simptcp/Receiver.h"
 #include <unistd.h>
 #include <dirent.h>
 #include "format/log.h"
@@ -33,8 +35,8 @@ void forced_sync(){
 
 int main(int argc, char* argv[])
 {
-	RdtSender *ps = new SRSender(4);
-	RdtReceiver * pr = new SRReceiver(4);
+	RdtSender *ps = new STCPSender(4);
+	RdtReceiver * pr = new STCPReceiver();
 	pns->init();
 	pns->setRtdSender(ps);
 	pns->setRtdReceiver(pr);

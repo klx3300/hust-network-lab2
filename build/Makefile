@@ -1,4 +1,4 @@
-__fake_main__: sr
+__fake_main__: stcp
 
 sw_recvr.o: ../stopwait/StopWaitRdtReceiver.cc ../stopwait/StopWaitRdtReceiver.h
 	@echo "   g++   sw_recvr.o"
@@ -27,6 +27,12 @@ sr_send.o: ../sr/Sender.cc ../sr/Sender.h
 sr_recv.o: ../sr/Receiver.cc ../sr/Receiver.h
 	@echo "   g++   sr_recv.o"
 	@g++ -c -g -std=gnu++14 -o sr_recv.o ../sr/Receiver.cc
+stcp_send.o: ../simptcp/Sender.cc ../simptcp/Sender.h
+	@echo "   g++   stcp_send.o"
+	@g++ -c -g -std=gnu++14 -o stcp_send.o ../simptcp/Sender.cc
+stcp_recv.o: ../simptcp/Receiver.cc ../simptcp/Receiver.h
+	@echo "   g++   stcp_recv.o"
+	@g++ -c -g -std=gnu++14 -o stcp_recv.o ../simptcp/Receiver.cc
 sw_main.o: ../main.cc
 	@echo "   g++   sw_main.o"
 	@g++ -c -g -std=gnu++14 -o sw_main.o ../main.cc
@@ -36,6 +42,9 @@ gbn: sw_main.o gbn_recv.o gbn_send.o fmt.o util.o ../lib/libnetsim.a
 sr: sw_main.o sr_recv.o sr_send.o fmt.o util.o pktbuffer.o ../lib/libnetsim.a 
 	@echo "   LD   sr"
 	@g++ -lpthread -no-pie -o sr sw_main.o sr_recv.o sr_send.o fmt.o util.o pktbuffer.o ../lib/libnetsim.a 
+stcp: sw_main.o stcp_recv.o stcp_send.o fmt.o util.o pktbuffer.o ../lib/libnetsim.a 
+	@echo "   LD   stcp"
+	@g++ -lpthread -no-pie -o stcp sw_main.o stcp_recv.o stcp_send.o fmt.o util.o pktbuffer.o ../lib/libnetsim.a 
 clean:
 	@echo "  CLEAN   all files."
-	-@rm sw_recvr.o sw_sendr.o fmt.o util.o pktbuffer.o gbn_send.o gbn_recv.o sr_send.o sr_recv.o sw_main.o gbn sr  2>/dev/null >/dev/null || true
+	-@rm sw_recvr.o sw_sendr.o fmt.o util.o pktbuffer.o gbn_send.o gbn_recv.o sr_send.o sr_recv.o stcp_send.o stcp_recv.o sw_main.o gbn sr stcp  2>/dev/null >/dev/null || true
