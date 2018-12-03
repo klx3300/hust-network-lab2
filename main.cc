@@ -8,6 +8,8 @@
 // #include "stopwait/StopWaitRdtReceiver.h"
 #include "goback/Sender.h"
 #include "goback/Receiver.h"
+#include "sr/Sender.h"
+#include "sr/Receiver.h"
 #include <unistd.h>
 #include <dirent.h>
 #include "format/log.h"
@@ -31,8 +33,8 @@ void forced_sync(){
 
 int main(int argc, char* argv[])
 {
-	RdtSender *ps = new GBNSender(4);
-	RdtReceiver * pr = new GBNReceiver();
+	RdtSender *ps = new SRSender(4);
+	RdtReceiver * pr = new SRReceiver(4);
 	pns->init();
 	pns->setRtdSender(ps);
 	pns->setRtdReceiver(pr);
